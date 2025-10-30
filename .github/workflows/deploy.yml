@@ -1,28 +1,19 @@
-name: Pipeline do Netlify
+name: Deploy Dev - Vercel
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dev ]
 
 jobs:
   deploy:
-    name: Deploy do Site no Netlify
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout do repositório 
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup do Node.js para Netlify CLI
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Instala o Netlify CLI
-        run: npm install -g netlify-cli
-
-      - name: Atualiza site na Netlify
+      - name: Deploy via Vercel Hook
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        run: netlify deploy --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN --dir="." --prod
+          VERCEL_HOOK_DEV: ${{ secrets.VERCEL_HOOK_DEV }}
+        run: |
+          curl -X POST $VERCEL_HOOK_DEV
